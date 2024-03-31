@@ -100,10 +100,3 @@ def test_delete_item_from_item_card():
     driver.get(url_cart)
     time.sleep(2)
     assert check_exist_element('//*[@data-test="inventory-item-name"]') is True
-
-
-
-
-
-
-
