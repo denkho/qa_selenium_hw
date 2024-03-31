@@ -71,8 +71,37 @@ def test_delete_item_from_cart():
     driver.get(url_cart)
     driver.find_element(By.XPATH, item_name_for_remove_cart_id).click()
     
-    assert check_exist_element('//*[@data-test="inventory-item-name"]') == True
-    
+    assert check_exist_element('//*[@data-test="inventory-item-name"]') is True
+
+
+def test_add_item_to_cart_from_item_card():
+    driver.get(url)
+    authorization()
+    time.sleep(1)
+
+    driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').click()
+    item_name = driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').text
+    driver.find_element(By.XPATH, '//button[@data-test="add-to-cart"]').click()
+    driver.get(url_cart)
+    time.sleep(1)
+    assert item_name == driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').text
+
+
+def test_delete_item_from_item_card():
+    driver.get(url)
+    authorization()
+    time.sleep(1)
+
+    driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').click()
+    driver.find_element(By.XPATH, '//button[@data-test="add-to-cart"]').click()
+    time.sleep(2)
+    driver.find_element(By.XPATH, '//button[@data-test="remove"]').click()
+
+    driver.get(url_cart)
+    time.sleep(2)
+    assert check_exist_element('//*[@data-test="inventory-item-name"]') is True
+
+
 
 
 
