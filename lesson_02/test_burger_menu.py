@@ -3,90 +3,40 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import time
 
-
-url = 'https://www.saucedemo.com/'
-url_inventory = 'https://www.saucedemo.com/inventory.html'
-url_cart = 'https://www.saucedemo.com/cart.html'
-url_about = 'https://saucelabs.com/'
-login = 'standard_user'
-password = 'secret_sauce'
+import data
+from locators import MainPage, BurgerMenu, Cart, Inventory
 
 
-def test_burger_menu_logout():
-    driver = webdriver.Chrome()
-    
-    driver.get(url)
-    time.sleep(2)
-
-    # authorization 
-    driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(login)
-    driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-    time.sleep(2)
-    driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
-    time.sleep(2)
-
+def test_burger_menu_logout(driver, authorize):
     # logout test
-    driver.find_element(By.XPATH, '//button[@id="react-burger-menu-btn"]').click()
-    time.sleep(2)
-    driver.find_element(By.LINK_TEXT, 'Logout').click()
+    driver.find_element(By.XPATH, BurgerMenu.main_button).click()
+    driver.implicitly_wait(2)
+    driver.find_element(By.LINK_TEXT, BurgerMenu.logout_text).click()
 
-    time.sleep(2)
+    driver.implicitly_wait(2)
 
-    assert driver.current_url == url
-
-    driver.quit()
+    assert driver.current_url == data.url
 
 
-def test_burger_about_button():
-    driver = webdriver.Chrome()
-    
-    driver.get(url)
-    time.sleep(2)
+def test_burger_about_button(driver, authorize):
+    # about button test
+    driver.find_element(By.XPATH, BurgerMenu.main_button).click()
+    driver.implicitly_wait(2)
+    driver.find_element(By.LINK_TEXT, BurgerMenu.about_text).click()
 
-    # authorization 
-    driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(login)
-    driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-    time.sleep(2)
-    driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
-    time.sleep(2)
+    driver.implicitly_wait(2)
 
-    # logout test
-    driver.find_element(By.XPATH, '//button[@id="react-burger-menu-btn"]').click()
-    time.sleep(2)
-    driver.find_element(By.LINK_TEXT, 'About').click()
-
-    time.sleep(3)
-
-    assert driver.current_url == url_about
-
-    driver.quit()
+    assert driver.current_url == data.url_about
 
 
 def xpath_transformator_to_cart_button(item_name):
     item_name_prepared = '-'.join(item_name.lower().split())
-    item_name_for_cart_id = '//*[@data-test="add-to-cart-' + item_name_prepared + '"]'
+    item_name_for_cart_id = Inventory.add_to_cart_id + item_name_prepared + '"]'
     return item_name_for_cart_id
 
 
-
-
-
-
-def test_burger_reset_app():
-    driver = webdriver.Chrome()
-    
-    driver.get(url)
-    time.sleep(2)
-
-    # authorization 
-    driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(login)
-    driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-    time.sleep(2)
-    driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
-    time.sleep(2)
-
-
-    elements_in_inventory = driver.find_elements(By.XPATH, '//*[@data-test="inventory-item-name"]')
+def test_burger_reset_app(driver, authorize):
+    elements_in_inventory = driver.find_elements(By.XPATH, Inventory.element_name)
     elements_in_inventory = [element.text for element in elements_in_inventory]
 
     ids_to_cart_add = [xpath_transformator_to_cart_button(elem) for elem in elements_in_inventory]
@@ -94,20 +44,18 @@ def test_burger_reset_app():
     for one_id in ids_to_cart_add:
         driver.find_element(By.XPATH, one_id).click()
     
-    time.sleep(2)
-    driver.get(url_cart)
-    time.sleep(2)
+    driver.implicitly_wait(2)
+    driver.get(data.url_cart)
+    driver.implicitly_wait(2)
 
     # reset app test
-    driver.find_element(By.XPATH, '//button[@id="react-burger-menu-btn"]').click()
-    time.sleep(2)
+    driver.find_element(By.XPATH, BurgerMenu.main_button).click()
+    driver.implicitly_wait(2)
     
-    driver.find_element(By.LINK_TEXT, 'Reset App State').click()
-    time.sleep(2)
+    driver.find_element(By.LINK_TEXT, BurgerMenu.reset_text).click()
+    driver.implicitly_wait(2)
     
     try:
-        driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]')
+        driver.find_element(By.XPATH, Inventory.element_name)
     except NoSuchElementException:
         assert 0 == 0    
-
-    driver.quit()
