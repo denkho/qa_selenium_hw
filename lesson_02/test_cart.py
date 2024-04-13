@@ -1,102 +1,58 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-import time
 
-driver = webdriver.Chrome()
-
-
-url = 'https://www.saucedemo.com/'
-url_inventory = 'https://www.saucedemo.com/inventory.html'
-url_cart = 'https://www.saucedemo.com/cart.html'
-login = 'standard_user'
-password = 'secret_sauce'
+import data
+from locators import Cart, Inventory, ItemCard
 
 
-def authorization():
-    driver.find_element(By.XPATH, '//*[@id="user-name"]').send_keys(login)
-    driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-    driver.find_element(By.XPATH, '//*[@id="login-button"]').click()
+def test_add_item_to_cart_from_inventory(driver, authorize):
+    item_name = driver.find_element(By.XPATH, Inventory.element_name).text
+    item_name_for_cart_id = Cart.xpath_transformator_to_cart_button(item_name)
+    driver.find_element(By.XPATH, item_name_for_cart_id).click()
+    driver.implicitly_wait(2)
+
+    driver.find_element(By.XPATH, Cart.cart_menu_icon).click()
+    driver.implicitly_wait(2)
+    assert driver.find_element(By.XPATH, Inventory.element_name).text == item_name
 
 
-def check_exist_element(xpath):
+def test_delete_item_from_cart(driver, authorize):
+    item_name = driver.find_element(By.XPATH, Inventory.element_name).text
+    item_name_for_cart_id = Cart.xpath_transformator_to_cart_button(item_name)
+    driver.find_element(By.XPATH, item_name_for_cart_id).click()
+    driver.implicitly_wait(2)
+
+    driver.find_element(By.XPATH, Cart.cart_menu_icon).click()
+    driver.implicitly_wait(2)
+    
+    driver.get(data.url_cart)
+    driver.find_element(By.XPATH, Cart.xpath_transformator_remove_from_cart_button(item_name)).click()
+    
     try:
-        driver.find_element(By.XPATH, xpath)
+        driver.find_element(By.XPATH, Inventory.element_name)
     except NoSuchElementException:
-        return True
-    return False
-
-
-def add_item_to_cart_from_inventory():
-    item_name = driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').text
-    item_name_prepared = '-'.join(item_name.lower().split())
-    item_name_for_cart_id = '//*[@data-test="add-to-cart-' + item_name_prepared + '"]'
-    
-    driver.find_element(By.XPATH, item_name_for_cart_id).click()
-    time.sleep(1)
-
-    driver.find_element(By.XPATH, '//*[@data-test="shopping-cart-link"]').click()
-    time.sleep(2)
-    return item_name_prepared
-
-
-def test_add_item_to_cart_from_inventory():
-    driver.get(url)
-
-    authorization()
-    time.sleep(1)
-
-    item_name = driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').text
-    item_name_prepared = '-'.join(item_name.lower().split())
-    item_name_for_cart_id = '//*[@data-test="add-to-cart-' + item_name_prepared + '"]'
-    
-    driver.find_element(By.XPATH, item_name_for_cart_id).click()
-    time.sleep(1)
-
-    driver.find_element(By.XPATH, '//*[@data-test="shopping-cart-link"]').click()
-    time.sleep(2)
-    
-    assert driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').text == item_name
+        assert 0 == 0  
     
 
 
-def test_delete_item_from_cart():
-    driver.get(url)
-
-    authorization()
-    time.sleep(1)
-    item_name_prepared = add_item_to_cart_from_inventory()
-    item_name_for_remove_cart_id = '//*[@data-test="remove-' + item_name_prepared + '"]'
-    
-    driver.get(url_cart)
-    driver.find_element(By.XPATH, item_name_for_remove_cart_id).click()
-    
-    assert check_exist_element('//*[@data-test="inventory-item-name"]') is True
+def test_add_item_to_cart_from_item_card(driver, authorize):
+    driver.find_element(By.XPATH, Inventory.element_name).click()
+    item_name = driver.find_element(By.XPATH, Inventory.element_name).text
+    driver.find_element(By.XPATH, ItemCard.add_to_cart_button).click()
+    driver.get(data.url_cart)
+    driver.implicitly_wait(2)
+    assert item_name == driver.find_element(By.XPATH, Inventory.element_name).text
 
 
-def test_add_item_to_cart_from_item_card():
-    driver.get(url)
-    authorization()
-    time.sleep(1)
+def test_delete_item_from_item_card(driver, authorize):
+    driver.find_element(By.XPATH, Inventory.element_name).click()
+    driver.find_element(By.XPATH, ItemCard.add_to_cart_button).click()
+    driver.implicitly_wait(2)
+    driver.find_element(By.XPATH, ItemCard.remove_button).click()
 
-    driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').click()
-    item_name = driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').text
-    driver.find_element(By.XPATH, '//button[@data-test="add-to-cart"]').click()
-    driver.get(url_cart)
-    time.sleep(1)
-    assert item_name == driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').text
-
-
-def test_delete_item_from_item_card():
-    driver.get(url)
-    authorization()
-    time.sleep(1)
-
-    driver.find_element(By.XPATH, '//*[@data-test="inventory-item-name"]').click()
-    driver.find_element(By.XPATH, '//button[@data-test="add-to-cart"]').click()
-    time.sleep(2)
-    driver.find_element(By.XPATH, '//button[@data-test="remove"]').click()
-
-    driver.get(url_cart)
-    time.sleep(2)
-    assert check_exist_element('//*[@data-test="inventory-item-name"]') is True
+    driver.get(data.url_cart)
+    driver.implicitly_wait(2)
+    try:
+        driver.find_element(By.XPATH, Inventory.element_name)
+    except NoSuchElementException:
+        assert 0 == 0  

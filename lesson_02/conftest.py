@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 import data
 from locators import MainPage
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def driver():
     driver = webdriver.Chrome()
     yield driver 

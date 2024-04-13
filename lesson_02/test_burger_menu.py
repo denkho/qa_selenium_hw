@@ -1,10 +1,9 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-import time
+
 
 import data
-from locators import MainPage, BurgerMenu, Cart, Inventory
+from locators import BurgerMenu, Inventory, Cart
 
 
 def test_burger_menu_logout(driver, authorize):
@@ -29,17 +28,11 @@ def test_burger_about_button(driver, authorize):
     assert driver.current_url == data.url_about
 
 
-def xpath_transformator_to_cart_button(item_name):
-    item_name_prepared = '-'.join(item_name.lower().split())
-    item_name_for_cart_id = Inventory.add_to_cart_id + item_name_prepared + '"]'
-    return item_name_for_cart_id
-
-
 def test_burger_reset_app(driver, authorize):
     elements_in_inventory = driver.find_elements(By.XPATH, Inventory.element_name)
     elements_in_inventory = [element.text for element in elements_in_inventory]
 
-    ids_to_cart_add = [xpath_transformator_to_cart_button(elem) for elem in elements_in_inventory]
+    ids_to_cart_add = [Cart.xpath_transformator_to_cart_button(elem) for elem in elements_in_inventory]
 
     for one_id in ids_to_cart_add:
         driver.find_element(By.XPATH, one_id).click()
