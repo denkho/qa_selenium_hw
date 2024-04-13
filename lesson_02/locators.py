@@ -1,3 +1,10 @@
+from selenium.webdriver.common.by import By
+
+class Standard:
+    @staticmethod
+    def transformator_item_name(item_name):
+        name = "-".join(item_name.lower().split())
+        return name
 
 
 class MainPage:
@@ -12,30 +19,44 @@ class BurgerMenu:
     main_button = '//button[@id="react-burger-menu-btn"]'
     logout_text = 'Logout'
     about_text = 'About'
-    reset_text = 'Reset App State'
-    
+    reset_text = 'Reset App State'   
 
 class Cart:
     cart_menu_icon = '//*[@data-test="shopping-cart-link"]'
 
     @staticmethod
     def xpath_transformator_to_cart_button(item_name):
-        item_name_prepared = '-'.join(item_name.lower().split())
-        item_name_for_cart_id = Inventory.add_to_cart_id + item_name_prepared + '"]'
+        item_name_for_cart_id = Inventory.add_to_cart_id + Standard.transformator_item_name(item_name) + '"]'
         return item_name_for_cart_id
 
     @staticmethod
     def xpath_transformator_remove_from_cart_button(item_name):
-        item_name_prepared = '-'.join(item_name.lower().split())
-        item_name_for_cart_id = Inventory.remove_from_cart_id + item_name_prepared + '"]'
+        item_name_for_cart_id = Inventory.remove_from_cart_id + Standard.transformator_item_name(item_name) + '"]'
         return item_name_for_cart_id
 
+
+class Order:
+    checkout_button = '//button[@data-test="checkout"]'
+    continue_button = '//input[@data-test="continue"]'
+    finish_button = '//button[@data-test="finish"]'
+
+    first_name_xpath = '//*[@data-test="firstName"]'
+    last_name_xpath = '//*[@data-test="lastName"]'
+    postal_xpath = '//*[@data-test="postalCode"]'
+    complete_header_xpath = '//*[@data-test="complete-header"]'
 
 class Inventory:
     element_name = '//*[@data-test="inventory-item-name"]'
     item_price = '//*[@data-test="inventory-item-price"]'
+    item_prefix = '//*[@data-test="inventory-item-'
     add_to_cart_id = '//*[@data-test="add-to-cart-'
     remove_from_cart_id = '//*[@data-test="remove-'
+
+    @staticmethod
+    def create_img_xpath(item_name):
+        return Inventory.item_prefix + Standard.transformator_item_name(item_name) + '-img"]'
+
+
 
 class InventoryFilter:
     sort_container = '//*[@data-test="product-sort-container"]'

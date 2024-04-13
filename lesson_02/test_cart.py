@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
 import data
-from locators import Cart, Inventory, ItemCard
+from locators import Cart, Inventory, ItemCard, BurgerMenu
 
 
 def test_add_item_to_cart_from_inventory(driver, authorize):
@@ -14,6 +14,13 @@ def test_add_item_to_cart_from_inventory(driver, authorize):
     driver.find_element(By.XPATH, Cart.cart_menu_icon).click()
     driver.implicitly_wait(2)
     assert driver.find_element(By.XPATH, Inventory.element_name).text == item_name
+
+    # RESET app
+    driver.find_element(By.XPATH, BurgerMenu.main_button).click()
+    driver.implicitly_wait(2)
+        
+    driver.find_element(By.LINK_TEXT, BurgerMenu.reset_text).click()
+    driver.implicitly_wait(2)
 
 
 def test_delete_item_from_cart(driver, authorize):
@@ -32,6 +39,13 @@ def test_delete_item_from_cart(driver, authorize):
         driver.find_element(By.XPATH, Inventory.element_name)
     except NoSuchElementException:
         assert 0 == 0  
+
+    # RESET app    
+    driver.find_element(By.XPATH, BurgerMenu.main_button).click()
+    driver.implicitly_wait(2)
+        
+    driver.find_element(By.LINK_TEXT, BurgerMenu.reset_text).click()
+    driver.implicitly_wait(2)
     
 
 
@@ -42,6 +56,13 @@ def test_add_item_to_cart_from_item_card(driver, authorize):
     driver.get(data.url_cart)
     driver.implicitly_wait(2)
     assert item_name == driver.find_element(By.XPATH, Inventory.element_name).text
+
+    # RESET app
+    driver.find_element(By.XPATH, BurgerMenu.main_button).click()
+    driver.implicitly_wait(2)
+        
+    driver.find_element(By.LINK_TEXT, BurgerMenu.reset_text).click()
+    driver.implicitly_wait(2)
 
 
 def test_delete_item_from_item_card(driver, authorize):
@@ -56,3 +77,11 @@ def test_delete_item_from_item_card(driver, authorize):
         driver.find_element(By.XPATH, Inventory.element_name)
     except NoSuchElementException:
         assert 0 == 0  
+    
+    # RESET app
+    driver.find_element(By.XPATH, BurgerMenu.main_button).click()
+    driver.implicitly_wait(2)
+        
+    driver.find_element(By.LINK_TEXT, BurgerMenu.reset_text).click()
+    driver.implicitly_wait(2)
+    
