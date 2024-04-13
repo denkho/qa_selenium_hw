@@ -31,6 +31,3 @@ def test_order_positive(driver, authorize):
     driver.implicitly_wait(2)
 
     assert driver.find_element(By.XPATH, Order.complete_header_xpath).text == data.complete_header
-
-
-

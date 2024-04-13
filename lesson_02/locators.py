@@ -15,6 +15,7 @@ class MainPage:
     login_error_message_text = 'Epic sadface: Username and password do not match any user in this service'
 
 
+
 class BurgerMenu:
     main_button = '//button[@id="react-burger-menu-btn"]'
     logout_text = 'Logout'
@@ -45,6 +46,7 @@ class Order:
     postal_xpath = '//*[@data-test="postalCode"]'
     complete_header_xpath = '//*[@data-test="complete-header"]'
 
+    
 class Inventory:
     element_name = '//*[@data-test="inventory-item-name"]'
     item_price = '//*[@data-test="inventory-item-price"]'
@@ -57,7 +59,6 @@ class Inventory:
         return Inventory.item_prefix + Standard.transformator_item_name(item_name) + '-img"]'
 
 
-
 class InventoryFilter:
     sort_container = '//*[@data-test="product-sort-container"]'
     sort_ZA_id = '//option[@value="za"]'
@@ -68,3 +69,4 @@ class InventoryFilter:
 class ItemCard:
     add_to_cart_button = '//button[@data-test="add-to-cart"]'
     remove_button = '//button[@data-test="remove"]'
+

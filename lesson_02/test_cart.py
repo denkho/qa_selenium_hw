@@ -84,4 +84,4 @@ def test_delete_item_from_item_card(driver, authorize):
         
     driver.find_element(By.LINK_TEXT, BurgerMenu.reset_text).click()
     driver.implicitly_wait(2)
-    
+   

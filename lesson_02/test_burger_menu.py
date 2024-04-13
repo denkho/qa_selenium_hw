@@ -52,3 +52,4 @@ def test_burger_reset_app(driver, authorize):
         driver.find_element(By.XPATH, Inventory.element_name)
     except NoSuchElementException:
         assert 0 == 0    
+

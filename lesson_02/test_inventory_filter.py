@@ -1,9 +1,6 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-import data
 from locators import Inventory, InventoryFilter
-
 
 
 def test_filter_A_Z(driver, authorize):
@@ -20,7 +17,6 @@ def test_filter_A_Z(driver, authorize):
     # get list of names of all items
     elements = driver.find_elements(By.XPATH, Inventory.element_name)
     elements = [element.text for element in elements]
-
     elements_ordered = sorted(elements)
 
     assert elements == elements_ordered
@@ -40,12 +36,11 @@ def test_filter_Z_A(driver, authorize):
     # get list of names of all items
     elements = driver.find_elements(By.XPATH, Inventory.element_name)
     elements = [element.text for element in elements]
-
     elements_ordered = sorted(elements, reverse=True)
 
     assert elements == elements_ordered
 
-
+    
 def test_filter_Lo_High(driver, authorize):
     # sort inversed order 
     driver.find_element(By.XPATH, InventoryFilter.sort_container).click()
@@ -60,11 +55,10 @@ def test_filter_Lo_High(driver, authorize):
     # get list of names of all items
     elements = driver.find_elements(By.XPATH, Inventory.item_price)
     elements = [float(element.text[1:]) for element in elements]
-
     elements_ordered = sorted(elements)
 
     assert elements == elements_ordered
-    
+
 
 def test_filter_High_Lo(driver, authorize):
     # sort inversed order 
@@ -80,7 +74,6 @@ def test_filter_High_Lo(driver, authorize):
     # get list of names of all items
     elements = driver.find_elements(By.XPATH, Inventory.item_price)
     elements = [float(element.text[1:]) for element in elements]
-
     elements_ordered = sorted(elements, reverse=True)
 
     assert elements == elements_ordered

@@ -11,7 +11,7 @@ def driver():
     yield driver 
     print('\nquit browser...')
     driver.quit()
-    
+
 
 @pytest.fixture()
 def authorize(driver):
@@ -20,3 +20,4 @@ def authorize(driver):
     driver.find_element(By.XPATH, MainPage.password_field).send_keys(data.password)
     driver.implicitly_wait(3)
     driver.find_element(By.XPATH, MainPage.login_button).click()
+

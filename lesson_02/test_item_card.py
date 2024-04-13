@@ -16,4 +16,3 @@ def test_positive_go_to_item_card_page_from_inventory_item_title(driver, authori
     driver.implicitly_wait(3)
 
     assert driver.find_element(By.XPATH, Inventory.element_name).text == item_name
-    
