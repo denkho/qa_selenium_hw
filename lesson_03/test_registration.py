@@ -1,3 +1,4 @@
+import time
 from data import Credentials, Messages, Urls
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -14,7 +15,22 @@ def test_registration_explicit_waits(driver, wait):
 
     driver.find_element(*Locators.checkbox_agree).click()
     driver.find_element(*Locators.button_register).click()
-
+    
     wait.until(EC.visibility_of_element_located(Locators.message_success))
 
+    assert driver.find_element(*Locators.message_success).text == Messages.success
+
+
+
+def test_registration_implicit_waits(driver):
+    driver.get(Urls.url)
+    
+    driver.find_element(*Locators.button_start).click()
+
+    driver.find_element(*Locators.login_field).send_keys(Credentials.login)
+    driver.find_element(*Locators.password_field).send_keys(Credentials.password)
+
+    driver.find_element(*Locators.checkbox_agree).click()
+    driver.find_element(*Locators.button_register).click()
+    time.sleep(5)
     assert driver.find_element(*Locators.message_success).text == Messages.success
